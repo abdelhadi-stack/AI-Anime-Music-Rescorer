@@ -1,0 +1,21 @@
+# Virtual Environment & Cache
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment Variables / Secrets
+.env
+
+# Output & Media Files
+output/
+input/
+*.mp4
+*.mp3
+*.wav
+*.mkv
+
+# External Dependencies / Submodules
+cocktail-fork-separation/
+
+
