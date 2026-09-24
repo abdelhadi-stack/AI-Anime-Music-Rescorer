@@ -1,0 +1,5 @@
+google-genai
+replicate
+python-dotenv
+pydantic
+opencv-python
