@@ -1,54 +1,54 @@
-# 🎵 AI Anime Music Rescorer (pipeline multi-agents)
+# 🎵 AI Anime Music Rescorer (Multi-Agent Pipeline)
 
-Pipeline expérimental piloté par l'IA pour analyser une scène vidéo, retirer sa musique d'origine tout en conservant les dialogues et les bruitages (SFX), puis générer et synchroniser une nouvelle bande-son adaptée à l'action et à l'émotion.
+Experimental AI-driven pipeline to analyze a video scene, remove its original music while preserving dialogues and sound effects (SFX), and then generate and synchronize a new soundtrack adapted to the action and emotion.
 
-> ⚠️ **Statut :** prototype expérimental. La qualité de la séparation audio et de la synchronisation musicale peut varier selon les scènes et les modèles utilisés.
+> ⚠️ **Status:** Experimental prototype. The quality of audio separation and musical synchronization may vary depending on the scenes and models used.
 
 ## 🚀 Architecture
 
-- **VisionAgent (Gemini)** : analyse un proxy vidéo horodaté pour identifier les transitions, le rythme et l'arc émotionnel, puis produit un prompt musical structuré dans le temps.
-- **AudioAgent (Lyria/Replicate)** : génère une nouvelle bande-son à partir du prompt.
-- **SeparatorAgent (MERL Cocktail-Fork)** : sépare la musique d'origine des voix et des bruitages.
-- **EditorAgent (FFmpeg)** : assemble la vidéo, les éléments audio conservés et la nouvelle musique, en ajustant leur durée et leurs volumes.
+- **VisionAgent (Gemini)**: Analyzes a timecoded video proxy to identify transitions, rhythm, and the emotional arc, then produces a time-stamped musical prompt.
+- **AudioAgent (Lyria/Replicate)**: Generates a new soundtrack from the prompt.
+- **SeparatorAgent (MERL Cocktail-Fork)**: Separates the original music from voices and SFX.
+- **EditorAgent (FFmpeg)**: Assembles the video, preserved audio elements, and the new music, adjusting their duration and volumes.
 
-### Flux de traitement
+### Processing Flow
 
 ```text
-Vidéo source
+Source Video
    │
-   ├──► Proxy vidéo avec timecodes
+   ├──► Video Proxy with timecodes
    │          └──► VisionAgent (Gemini)
-   │                     └──► Prompt musical horodaté
+   │                     └──► Time-stamped musical prompt
    │                                └──► AudioAgent (Lyria/Replicate)
-   │                                           └──► Nouvelle OST
+   │                                           └──► New OST
    │
-   ├──► SeparatorAgent (MERL, si musique d'origine présente)
-   │          └──► Voix + SFX
+   ├──► SeparatorAgent (MERL, if original music is present)
+   │          └──► Voices + SFX
    │
    └──► EditorAgent (FFmpeg)
-              └──► Vidéo finale rescorée
+              └──► Final rescored video
 ```
 
-## 🛠️ Prérequis
+## 🛠️ Prerequisites
 
-- Python 3.8 ou version supérieure.
-- FFmpeg installé et accessible depuis le `PATH`.
-- Git et Git LFS pour récupérer les fichiers volumineux du séparateur MERL.
-- Un compte [Google AI Studio](https://aistudio.google.com/) pour obtenir une clé API Gemini.
-- Un compte [Replicate](https://replicate.com/) pour obtenir un jeton API de génération audio.
+- Python 3.8 or higher.
+- FFmpeg installed and accessible from your system's `PATH`.
+- Git and Git LFS to fetch the large files required for the MERL separator.
+- A [Google AI Studio](https://aistudio.google.com/) account to get a Gemini API key.
+- A [Replicate](https://replicate.com/) account to get an audio generation API token.
 
 ## 📦 Installation
 
-### 1. Cloner le dépôt
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/abdelhadi-stack/AI-Anime-Music-Rescorer.git
 cd ai-anime-music-rescorer
 ```
 
-### 2. Créer un environnement virtuel
+### 2. Create a virtual environment
 
-Sous Linux ou macOS :
+On Linux or macOS:
 
 ```bash
 python3 -m venv .venv
@@ -56,7 +56,7 @@ source .venv/bin/activate
 python -m pip install --upgrade pip
 ```
 
-Sous Windows PowerShell :
+On Windows PowerShell:
 
 ```powershell
 py -3 -m venv .venv
@@ -64,9 +64,9 @@ py -3 -m venv .venv
 python -m pip install --upgrade pip
 ```
 
-### 3. Installer MERL Cocktail-Fork
+### 3. Install MERL Cocktail-Fork
 
-Depuis la racine du projet :
+From the project root:
 
 ```bash
 git clone https://github.com/merlresearch/cocktail-fork-separation.git
@@ -77,31 +77,30 @@ python -m pip install -r requirements.txt
 cd ..
 ```
 
-### 4. Installer les dépendances du projet
+### 4. Install project dependencies
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-## 🔑 Configuration des clés API
+## 🔑 API Keys Configuration
 
-Créez une clé API dans [Google AI Studio](https://aistudio.google.com/) et un jeton API sur [Replicate](https://replicate.com/). À la racine du projet, créez un fichier `.env` :
+Create an API key in [Google AI Studio](https://aistudio.google.com/) and an API token on [Replicate](https://replicate.com/). At the root of the project, create a `.env` file:
 
 ```dotenv
-GEMINI_API_KEY=votre_cle_gemini_ici
-REPLICATE_API_TOKEN=votre_token_replicate_ici
+GEMINI_API_KEY=your_gemini_key_here
+REPLICATE_API_TOKEN=your_replicate_token_here
 ```
 
+## 🎮 Usage
 
-## 🎮 Utilisation
-
-### Lancer le pipeline complet
+### Run the complete pipeline
 
 ```bash
 python main.py -i "./video_test.mp4" --merl_dir "./cocktail-fork-separation"
 ```
 
-### Choisir le dossier de sortie et les éléments audio conservés
+### Choose output folder and preserved audio elements
 
 ```bash
 python main.py \
@@ -111,9 +110,9 @@ python main.py \
   --audio_mode both
 ```
 
-### Traiter une vidéo sans musique d'origine
+### Process a video without original music
 
-Si la vidéo ne contient pas de musique à retirer, désactivez la séparation audio :
+If the video does not contain any music that needs to be removed, disable the audio separation:
 
 ```bash
 python main.py \
@@ -122,54 +121,54 @@ python main.py \
   --no-has_bgm
 ```
 
-## ⚙️ Arguments de la ligne de commande
+## ⚙️ Command-Line Arguments
 
-| Argument             | Requis | Valeur par défaut | Description                                                              |
-| -------------------- | ------ | ------------------ | ------------------------------------------------------------------------ |
-| `-i`, `--input`  | Oui    | —                 | Chemin de la vidéo source (`.mp4`, `.mkv`, etc.).                   |
-| `--merl_dir`       | Oui    | —                 | Chemin du dossier local de MERL Cocktail-Fork.                           |
-| `-o`, `--output` | Non    | `./output`       | Dossier de sortie des fichiers générés.                               |
-| `--audio_mode`     | Non    | `both`           | Audio d'origine à conserver :`speech`, `sfx`, `both` ou `none`. |
-| `--no-has_bgm`     | Non    | Désactivé        | Indique qu'il n'y a pas de musique d'origine et ignore MERL.             |
+| Argument             | Required | Default Value      | Description                                                              |
+| -------------------- | -------- | ------------------ | ------------------------------------------------------------------------ |
+| `-i`, `--input`      | Yes      | —                  | Path to the source video (`.mp4`, `.mkv`, etc.).                         |
+| `--merl_dir`         | Yes      | —                  | Path to the local MERL Cocktail-Fork folder.                             |
+| `-o`, `--output`     | No       | `./output`         | Output folder for generated files.                                       |
+| `--audio_mode`       | No       | `both`             | Original audio to preserve: `speech`, `sfx`, `both`, or `none`.          |
+| `--no-has_bgm`       | No       | Disabled           | Indicates there is no original music and bypasses MERL.                  |
 
-Valeurs possibles pour `--audio_mode` :
+Possible values for `--audio_mode`:
 
-- `speech` : conserve les dialogues et les voix.
-- `sfx` : conserve les bruitages.
-- `both` : conserve les dialogues et les bruitages.
-- `none` : ne conserve aucun élément audio d'origine.
+- `speech`: Keeps dialogues and voices.
+- `sfx`: Keeps sound effects.
+- `both`: Keeps both dialogues and sound effects.
+- `none`: Does not keep any original audio elements.
 
-## 🔄 Déroulement de l'exécution
+## 🔄 Execution Flow
 
-1. Création d'un proxy vidéo allégé avec timecode incrusté.
-2. Analyse de la scène par Gemini : rythme, transitions, événements et arc émotionnel.
-3. Construction d'un prompt musical horodaté.
-4. Génération de la nouvelle bande-son via Replicate.
-5. Séparation éventuelle des dialogues et bruitages de la musique d'origine via MERL.
-6. Mixage et assemblage avec FFmpeg.
-7. Enregistrement des fichiers intermédiaires et de la vidéo finale dans le dossier de sortie.
+1. Creation of a lightweight video proxy with embedded timecode.
+2. Scene analysis by Gemini: rhythm, transitions, events, and emotional arc.
+3. Construction of a time-stamped musical prompt.
+4. Generation of the new soundtrack via Replicate.
+5. Optional separation of dialogues and SFX from the original music via MERL.
+6. Mixing and assembly with FFmpeg.
+7. Saving intermediate files and the final video to the output folder.
 
-## 🐛 Dépannage
+## 🐛 Troubleshooting
 
-### FFmpeg est introuvable
+### FFmpeg is not found
 
-Vérifiez son installation et son accessibilité :
+Check its installation and accessibility:
 
 ```bash
 ffmpeg -version
 ```
 
-Si la commande échoue, installez FFmpeg avec le gestionnaire de paquets de votre système, puis ouvrez un nouveau terminal.
+If the command fails, install FFmpeg using your system's package manager, then open a new terminal.
 
-### Une clé API n'est pas détectée
+### An API key is not detected
 
-- Vérifiez que `.env` se trouve dans le même dossier que `main.py`.
-- Vérifiez l'orthographe de `GEMINI_API_KEY` et `REPLICATE_API_TOKEN`.
-- Supprimez les espaces ou guillemets superflus autour des valeurs.
+- Ensure that the `.env` file is located in the same folder as `main.py`.
+- Check the spelling of `GEMINI_API_KEY` and `REPLICATE_API_TOKEN`.
+- Remove any extra spaces or quotes around the values.
 
-### Les fichiers MERL ou Git LFS sont manquants
+### MERL or Git LFS files are missing
 
-Depuis le dossier du séparateur :
+From the separator folder:
 
 ```bash
 git lfs install
@@ -178,13 +177,13 @@ git lfs pull
 
 ## 🗺️ Roadmap
 
-- [ ] Adapter les prompts musicaux au genre de la scène : action, romance, thriller, etc.
-- [ ] Détecter automatiquement les segments musicaux et les silences.
-- [ ] Créer une interface graphique pour charger et traiter les vidéos.
-- [ ] Prendre en charge le traitement par lots.
+- [ ] Adapt musical prompts to the scene's genre: action, romance, thriller, etc.
+- [ ] Automatically detect musical segments and silences.
+- [ ] Create a graphical user interface (GUI) to load and process videos.
+- [ ] Support batch processing.
 
-## ⚖️ Licence
+## ⚖️ License
 
-Ce projet est distribué sous licence MIT.
+This project is licensed under the MIT License.
 
-Les services et modèles tiers peuvent être soumis à des licences et conditions d'utilisation distinctes. Vérifiez celles de Gemini, Replicate et MERL Cocktail-Fork avant toute utilisation commerciale.
+Third-party models and services may be subject to separate licenses and terms of use. Please review the terms for Gemini, Replicate, and MERL Cocktail-Fork prior to any commercial use.
